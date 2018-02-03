@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/nav.ejs %>
+  <div class="container">
+
+  <h2>TASK 1</h2>
+
+  <ol>
+          <!-- Question 1 -->
+          <li>
+
+            <code>
+             {'/api/accounts/3': 8757, '/user_password_resets': 1, '/petitions': 1, '/accounts': 1, '/backend/subscription/update_billing': 1, '/uas/request-password-reset?trk=uas-resetpass': 1}
+            </code>
+
+
+
+          </li>
+
+          <!-- Question 2 -->
+          <br>
+          <li>
+             About <strong>170ms</strong>
+          </li>
+
+
+
+          <!-- Question 3 -->
+          <br>
+          <li>
+             It looks like the "delayed_jobs" database was most frequently accessed database.
+            <br>
+          </li>
+
+          <!-- Question 4 -->
+          <br>
+          <li>
+             Yes there are 302 re-directions statuses that can be seen in the logs.  There also seems to be a "redirect_uri" table attribute.
+             <br>
+          </li>
+
+          <!-- Question 5 -->
+          <br>
+          <li>
+            Yes there are 500 server errors sprinkled throughout the log.  One of the issues is that it there seems to base missing views templates that the server is trying to locate:
+            <br>
+            <code>
+            status=500 error='ActionView::<strong>MissingTemplate:Missing template backend</strong>/reports/detailed_export, backend/base/detailed_export, application/detailed_export with {:locale=>[:en], :formats=>[:html], :variants=>[], :handlers=>[:erb, :builder, :raw, :ruby, :jbuilder, :jpbuilder, :coffee, :haml, :hamlc]}.
+            </code>
+
+          </li>
+
+          <br>
+          <br>
+
+
+          <strong>Here is the (python 3) script used to parse the log files!</strong>
+
+          <br>
+          <code>
+            <p>import re<br />from collections import defaultdict<br />import operator<br /><br />filename='2014-09-03.log'<br /><br />with open(filename,'rt') as f:<br />&nbsp;&nbsp;&nbsp; averageTime = 0<br />&nbsp;&nbsp;&nbsp; count = 0<br />&nbsp;&nbsp;&nbsp; dbDict = defaultdict(int)<br />&nbsp;&nbsp;&nbsp; URLsNotFound = defaultdict(int)<br /><br />&nbsp;&nbsp;&nbsp; for line in f:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if "status=404" in line:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('path=\"?(.+?)\"?\s', line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; URLsNotFound[match[0]]+= 1<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 2<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ("status=200" in line) and ("method=GET" in line):<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('([0-9]+\.?[0-9]{0,2})ms',line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; totalTime = sum(map(float, match))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; averageTime += totalTime<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count += 1<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 2<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('"([A-Za-z\.\_\-]+?)"(?:\.?"?[A-Za-z\.\_\-]+"?)?',line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for item in set(match):<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dbDict[item] += 1<br /><br /><br />&nbsp;&nbsp;&nbsp; sorted_x = sorted(dbDict.items(), key=operator.itemgetter(1), reverse=True);<br /><br />&nbsp;&nbsp;&nbsp; #Print out answers<br />&nbsp;&nbsp;&nbsp; print("Most popular database: ", sorted_x[0])<br />&nbsp;&nbsp;&nbsp; print("Urls not found: ", URLsNotFound)<br /><br />&nbsp;&nbsp;&nbsp; averagePageTime = averageTime/count<br />&nbsp;&nbsp;&nbsp; print("Average time to serve a page (in ms): ", averagePageTime)</p>
+          </code>
+
+  </ol>
+
+  </div>
+
+</body>
+</html>

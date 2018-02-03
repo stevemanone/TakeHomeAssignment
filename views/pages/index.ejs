@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/nav.ejs %>
+
+
+<p class="notes">
+
+    Hi my name is Steve and I'm applying for the opportunity to
+     be an operations engineer at Workable!
+
+     <br>
+     <br>
+
+     The MovieData (Problem3 in the nav bar above) was created
+     using Node and Express.  The Index.js file contains logic that queries the movieDB, and using Axios, we get a JSON response with the relevant information.  First we find a list of the movies that are out in
+     Greece, and push those movie IDs into an array.  We then we go through the array of movies to find the cast/crew list for each film, from which we retrieve the director.  From there, we retrieve the director's IMDB information.  The results are stored in an Postgres db, with two tables: a 'movies' table has the movieID, title, original title, description and a director id.  The 'directors' table has an id, the name of the director, and their imdb link.
+
+     <br>
+     <br>
+
+     <i>
+     One of the biggest challenges were understanding how to use the API to
+     retrieve all the neccesary information while still keeping under the
+     rate threshold (of 40 requests every 10 seconds).  Using the <code>append_to_response</code> feature, you can retrieve more information
+     from each query, for example finding both the name,description of a movie AND
+     the names of the crew (ie. to find the director).  However, this feature does not allow you to append sub-requests from other namespaces, which
+     limits it usage a bit.  I appreciated the challange, and it was a good
+     chance to practice more with the Heroku platform :)
+    </i>
+     <br>
+     <br>
+
+     <strong> Databases </strong>:
+     <br>
+
+    <code>
+      create table directors (id integer primary key, name varchar(100), imdb_link varchar(40));
+    </code>
+
+    <br>
+    <br>
+    <code>
+     create table movies (id integer primary key, title  varchar(100) not null, original_title varchar(100), description text, director_id integer);
+    </code>
+
+    <br>
+    <br>
+
+     I would appreciate any and all constructive feedback
+     on how I responded to these questions (ie. what could
+     I have done differently, what is the 'best practice').  You can reach me at
+     stevemanbu@gmail.com!
+
+     <br>
+     <br>
+     -Steve Man
+</p>
+
+
+</body>
+</html>

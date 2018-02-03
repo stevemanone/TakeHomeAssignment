@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+<body>
+<% include ../partials/nav.ejs %>
+<div class="container">
+<h2>Movies Currently Out In Greece</h2>
+<a href="/addmovies"><span class="glyphicon glyphicon-plus-sign"></span> Update List (fetches list from the movie database API and updates database!)</a>
+
+<br>
+<br>
+
+<ul>
+    <% results.forEach(function(r) { %>
+        <li> <strong> <%= r.title %> </strong> (Original Title: <%= r.original_title%>) was directed by <%= r.name %>
+            (<a href = "<%= r.imdb_link %>"> IMDB LINK </a>).
+            <br>
+
+          <u>Description:</u> <%= r.description %>
+
+        </li>
+        <br>
+    <% }); %>
+</ul>
+
+
+</div>
+
+</body>
+</html>

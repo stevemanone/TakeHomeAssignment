@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/nav.ejs %>
+  <div class="container">
+
+  <h2>TASK 2</h2>
+
+  <ol>
+          <!-- QuestiON 1 -->
+          <li>
+            Jorge Olivares
+
+            <br>
+            <code>
+              SELECT customer.customer_id, customer.first_name, customer.last_name, COUNT(distinct rental.rental_id)
+              as rentals FROM customer JOIN rental ON rental.customer_id = customer.customer_id
+              JOIN inventory ON rental.inventory_id = inventory.inventory_id JOIN
+              store ON inventory.store_id = store.store_id where store.store_id = 2 GROUP BY customer.customer_id
+            	ORDER BY 4 desc limit 1;
+            </code>
+
+
+
+          </li>
+
+          <!-- QuestiON 2 -->
+          <br>
+          <li>
+              Yes store 2 has a copy!
+              <br>
+              <code>  SELECT DISTINCT inventory.inventory_id
+                  FROM inventory JOIN
+                  store ON inventory.store_id = store.store_id JOIN film ON film.film_id = inventory.film_id
+                  JOIN rental ON rental.inventory_id = inventory.inventory_id
+                  where film.title = 'Image Princess' AND inventory.store_id = 2 AND inventory.inventory_id not in
+                  <br>
+                  (
+                  SELECT  inventory.inventory_id
+                  FROM inventory JOIN
+                  store ON inventory.store_id = store.store_id JOIN film ON film.film_id = inventory.film_id
+                  JOIN rental ON rental.inventory_id = inventory.inventory_id
+                  where film.title = 'Image Princess' AND inventory.store_id = 2 AND '2005-07-29 15:00:00' BETWEEN
+                      rental_date AND return_date
+                  );
+            </code>
+          </li>
+          <br>
+
+          <!-- QuestiON 3 -->
+          <br>
+          <li>
+            "RentalMonth","count"
+            <br>
+            "2005-05","520"
+            <br>
+            "2005-06","590"
+            <br>
+            "2005-07","599"
+            <br>
+            "2005-08","599"
+            <br>
+            "2006-02","158"
+            <br>
+
+            <code>
+              SELECT to_char(rental.rental_date, 'YYYY-MM') as RentalMONth, COUNT(DISTINCT customer.customer_id)
+              FROM customer JOIN rental ON rental.customer_id = customer.customer_id GROUP BY 1;
+            </code>
+
+            <br>
+          </li>
+
+          <!-- QuestiON 4 -->
+          <br>
+          <li>
+             Sports films seem to be the most popular genre.<br>
+
+             <code>
+             SELECT c.name AS category,
+                COUNT(distinct r.rental_id)
+               FROM rental r<br>
+                 JOIN inventory i ON r.inventory_id = i.inventory_id<br>
+                 JOIN film f ON i.film_id = f.film_id<br>
+                 JOIN film_category fc ON f.film_id = fc.film_id<br>
+                 JOIN category c ON fc.category_id = c.category_id<br>
+              GROUP BY c.name<br>
+              ORDER BY (2) DESC;
+            </code>
+
+             <br>
+          </li>
+
+          <!-- QuestiON 5 -->
+          <br>
+          <li>
+
+            The movie "Bucket Brotherhood" is the most popular sports movie.
+
+            <br>
+            <code>
+            SELECT f.title, COUNT(r.rental_id)<br>
+              FROM rental r<br>
+                JOIN inventory i ON r.inventory_id = i.inventory_id<br>
+                JOIN film f ON i.film_id = f.film_id<br>
+                JOIN film_category fc ON f.film_id = fc.film_id<br>
+                JOIN category c ON c.category_id = c.category_id<br>
+                where c.name ILIKE 'Sports'<br>
+                GROUP BY 1 ORDER BY 2 desc limit 1;
+            </code>
+            <br>
+
+
+
+            <!-- QuestiON 6 -->
+            <br>
+            <li>
+
+              The following query shows the various countries that
+              customers are from (ranked by number of rentals from each particular country).  This could help the owner better understand
+              where his/her customers are, and then can use this information to direct advertisment/marketing resources.
+
+              <br>
+              <code>
+                SELECT COUNTry.COUNTry, COUNT(distinct rental.rental_id) FROM<br>
+                rental JOIN customer ON rental.customer_id =<br> customer.customer_id JOIN<br>
+                address ON address.address_id = customer.address_id JOIN city<br>
+                ON city.city_id = address.city_id JOIN COUNTry ON <br>
+                COUNTry.COUNTry_id = city.COUNTry_id<br>
+                GROUP BY 1 ORDER BY 2 desc;
+              </code>
+              <br>
+
+          <br>
+          <br>
+
+
+  </ol>
+
+  </div>
+
+</body>
+</html>
