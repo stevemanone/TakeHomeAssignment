@@ -14,6 +14,8 @@
   <ol>
           <!-- Question 1 -->
           <li>
+            <i> Searched each section of the log for '404' errors, and then
+            found the "Path" the server was attempting to reach: </i>
 
             <code>
              {'/api/accounts/3': 8757, '/user_password_resets': 1, '/petitions': 1, '/accounts': 1, '/backend/subscription/update_billing': 1, '/uas/request-password-reset?trk=uas-resetpass': 1}
@@ -24,8 +26,16 @@
           </li>
 
           <!-- Question 2 -->
+
           <br>
+
+
           <li>
+            <i> Parsed the log files for status code '200' (to find pages that were successfully reached), and then
+            added up the time it took to serve that page (ie. time to 'connect'
+            and then 'service' the page).  Then found the average:
+            </i>
+
              About <strong>170ms</strong>
           </li>
 
@@ -34,6 +44,9 @@
           <!-- Question 3 -->
           <br>
           <li>
+            <i> Parsed the log files for various database names.  In these logs, the database names are usually wrapped in double quotes, so the regular expression targeted strings that matched that pattern:  
+            </i>
+
              It looks like the "delayed_jobs" database was most frequently accessed database.
             <br>
           </li>
@@ -64,7 +77,7 @@
 
           <br>
           <code>
-            <p>import re<br />from collections import defaultdict<br />import operator<br /><br />filename='2014-09-03.log'<br /><br />with open(filename,'rt') as f:<br />&nbsp;&nbsp;&nbsp; averageTime = 0<br />&nbsp;&nbsp;&nbsp; count = 0<br />&nbsp;&nbsp;&nbsp; dbDict = defaultdict(int)<br />&nbsp;&nbsp;&nbsp; URLsNotFound = defaultdict(int)<br /><br />&nbsp;&nbsp;&nbsp; for line in f:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if "status=404" in line:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('path=\"?(.+?)\"?\s', line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; URLsNotFound[match[0]]+= 1<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 2<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ("status=200" in line) and ("method=GET" in line):<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('([0-9]+\.?[0-9]{0,2})ms',line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; totalTime = sum(map(float, match))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; averageTime += totalTime<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count += 1<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 2<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('"([A-Za-z\.\_\-]+?)"(?:\.?"?[A-Za-z\.\_\-]+"?)?',line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for item in set(match):<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dbDict[item] += 1<br /><br /><br />&nbsp;&nbsp;&nbsp; sorted_x = sorted(dbDict.items(), key=operator.itemgetter(1), reverse=True);<br /><br />&nbsp;&nbsp;&nbsp; #Print out answers<br />&nbsp;&nbsp;&nbsp; print("Most popular database: ", sorted_x[0])<br />&nbsp;&nbsp;&nbsp; print("Urls not found: ", URLsNotFound)<br /><br />&nbsp;&nbsp;&nbsp; averagePageTime = averageTime/count<br />&nbsp;&nbsp;&nbsp; print("Average time to serve a page (in ms): ", averagePageTime)</p>
+            <p>import re<br />from collections import defaultdict<br />import operator<br /><br />filename='2014-09-03.log'<br /><br />with open(filename,'rt') as f:<br />&nbsp;&nbsp;&nbsp; accumulateTime = 0<br />&nbsp;&nbsp;&nbsp; count = 0<br />&nbsp;&nbsp;&nbsp; dbDict = defaultdict(int)<br />&nbsp;&nbsp;&nbsp; URLsNotFound = defaultdict(int)<br /><br />&nbsp;&nbsp;&nbsp; for line in f:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if "status=404" in line:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('path=\"?(.+?)\"?\s', line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; URLsNotFound[match[0]]+= 1<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 2<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ("status=200" in line) and ("method=GET" in line):<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('([0-9]+\.?[0-9]{0,2})ms',line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tempTime = sum(map(float, match))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; accumulateTime += tempTime<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count += 1<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; # Question 2<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; match = re.findall('"([A-Za-z\.\_\-]+?)"(?:\.?"?[A-Za-z\.\_\-]+"?)?',line)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for item in set(match):<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dbDict[item] += 1<br /><br /><br />&nbsp;&nbsp;&nbsp; sorted_x = sorted(dbDict.items(), key=operator.itemgetter(1), reverse=True);<br /><br />&nbsp;&nbsp;&nbsp; #Print out answers<br />&nbsp;&nbsp;&nbsp; print("Most popular database: ", sorted_x[0])<br />&nbsp;&nbsp;&nbsp; print("Urls not found: ", URLsNotFound)<br /><br />&nbsp;&nbsp;&nbsp; averagePageTime = accumulateTime/count<br />&nbsp;&nbsp;&nbsp; print("Average time to serve a page (in ms): ", averagePageTime)</p>
           </code>
 
   </ol>
