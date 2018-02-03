@@ -110,7 +110,7 @@
                 JOIN film f ON i.film_id = f.film_id<br>
                 JOIN film_category fc ON f.film_id = fc.film_id<br>
                 JOIN category c ON c.category_id = c.category_id<br>
-                where c.name ILIKE 'Sports'<br>
+                where c.name = 'Sports'<br>
                 GROUP BY 1 ORDER BY 2 desc limit 1;
             </code>
             <br>
